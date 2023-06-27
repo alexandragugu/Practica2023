@@ -2,6 +2,7 @@
 #include "ui_dnswindow.h"
 #include <QLineEdit>
 #include "dnsoptiuni.h"
+#include "dnsupdate.h"
 
 DNSWindow::DNSWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -41,7 +42,7 @@ void DNSWindow::on_pushButton_3_clicked()
 
 void DNSWindow::on_pushButton_4_clicked()
 {
-    DNSOptiuni *optiuni=new DNSOptiuni();
+    DNSUpdate *optiuni= new DNSUpdate();
     optiuni->show();
 }
 

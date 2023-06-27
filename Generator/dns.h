@@ -20,7 +20,7 @@ protected:
     QString generateRandomIP();
 
 public:
-    virtual void trimite()=0;
+   void trimite();
     void getIPAddress();
 };
 

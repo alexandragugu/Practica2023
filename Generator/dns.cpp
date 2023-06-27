@@ -17,6 +17,11 @@ QString DNS::generateRandomIP()
     return ipAddress;
 }
 
+void DNS::trimite()
+{
+
+}
+
 void DNS::getIPAddress()
 {
     QString localHostName = QHostInfo::localHostName();
