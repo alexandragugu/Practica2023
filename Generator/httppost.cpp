@@ -4,8 +4,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QCoreApplication>
-//#include <QMailMessage>
-//#include <QMailTransport>
+#include <QtNetwork>
 
 
 HTTPPost::HTTPPost(QWidget *parent) :
@@ -34,29 +33,35 @@ void HTTPPost::on_lineEdit_2_editingFinished()
 
 void HTTPPost::on_pushButton_clicked()
 {
-    /*
-    QMailMessage message;
-    message.setSender(from);
-    message.setTo(to);
-    message.setSubject(data);
-    message.setBody("corp mail");
+    QNetworkAccessManager manager;
 
-    QMailTransport* transport = QMailTransport::create("smtp");
-    transport->connectToHost();
+    // Crearea cererii HTTP
+    QNetworkRequest request(QUrl(this->url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-    if (transport->state() == QMailTransport::Disconnected) {
-        qDebug() << "Eroare la conectarea la serverul SMTP.";
-        return;
-    }
+    // Crearea datelor care trebuie trimise
+    this->readData();
+    QByteArray postData=this->data;
+   // postData.append("param1=value1");
 
-    if (!transport->sendMessages(QList<QMailMessage>() << message)) {
-        qDebug() << "Eroare la trimiterea e-mailului.";
-    }
+    QNetworkReply *reply = manager.post(request, postData);
 
-    transport->disconnectFromHost();
-    transport->deleteLater();
-}
-*/
+
+    QObject::connect(reply, &QNetworkReply::finished, [&]() {
+        if (reply->error() == QNetworkReply::NoError) {
+
+            QByteArray response = reply->readAll();
+            qDebug() << "Raspuns:" << response;
+        } else {
+
+            qDebug() << "Eroare:" << reply->errorString();
+        }
+
+
+        reply->deleteLater();
+
+    });
+
     this->close();
 }
 

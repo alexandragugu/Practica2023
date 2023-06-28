@@ -22,20 +22,12 @@ void DNSOptiuni::on_OK_clicked()
 
     if (this->packet_type=="Query"){
         DNSQuery *packet=new DNSQuery(this->domeniu);
+        packet->getPath(this->path);
         packet->trimite();
     }
     this->close();
 }
 
-
-/*void DNSOptiuni::on_lineEdit_editingFinished()
-{
-    QString text = ui->lineEdit->text();
-    this->ip=text;
-    text="1->"+text;
-    qDebug()<<text;
-}
-*/
 
 
 void DNSOptiuni::on_lineEdit_4_editingFinished()
@@ -46,33 +38,16 @@ void DNSOptiuni::on_lineEdit_4_editingFinished()
     qDebug()<<text;
 }
 
-/*void DNSOptiuni::on_lineEdit_4_editingFinished()
+
+
+void DNSOptiuni::on_ip_proxy_editingFinished()
 {
-    QString text = ui->lineEdit->text();
-    this->domeniu=text;
-    text="3->"+text;
-    qDebug()<<text;
+    this->proxy_ip=ui->ip_proxy->text();
 }
 
 
-void DNSOptiuni::on_lineEdit_2_editingFinished()
+void DNSOptiuni::on_port_proxy_editingFinished()
 {
-    QString text = ui->lineEdit->text();
-    this->info=text;
-    text="4->"+text;
-    qDebug()<<text;
+    this->proxy_port=ui->port_proxy->text();
 }
-
-
-void DNSOptiuni::on_lineEdit_5_editingFinished()
-{
-    QString text = ui->lineEdit->text();
-    this->clasa=text;
-    text="5->"+text;
-    qDebug()<<text;
-}
-*/
-
-
-
 

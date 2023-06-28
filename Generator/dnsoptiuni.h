@@ -12,18 +12,20 @@ class DNSOptiuni : public QMainWindow
 {
 protected:
     Q_OBJECT
-    QString packet_type;
-    QString tip;
+
     QString ip;
     QString domeniu;
-    QString port;
-    QString info;
-    QString clasa;
+    QString packet_type;
+    int port;
+    QString path;
+    QString proxy_ip;
+    QString proxy_port;
 
 public:
     DNSOptiuni(QWidget *parent = nullptr);
     //DNSOptiuni(QString type);
     void getType(QString tip){this->packet_type=tip;};
+    void getPath(QString cale){ this->path=cale;};
     ~DNSOptiuni();
 
 
@@ -31,18 +33,13 @@ private slots:
 
     void on_OK_clicked();
 
-   // void on_lineEdit_editingFinished();
-
     void on_lineEdit_4_editingFinished();
 
-  //  void on_lineEdit_4_editingFinished();
+ //   void on_numarPort_editingFinished();
 
-   // void on_lineEdit_2_editingFinished();
+    void on_ip_proxy_editingFinished();
 
-  //  void on_lineEdit_5_editingFinished();
-
-
-    //void on_lineEdit_4_editingFinished();
+    void on_port_proxy_editingFinished();
 
 private:
     Ui::DNSOptiuni *ui;

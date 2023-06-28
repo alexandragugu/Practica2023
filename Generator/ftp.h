@@ -13,6 +13,7 @@ class FTP : public QMainWindow
     Q_OBJECT
 protected:
     QString adresaServer;
+    int port_number;
     QString user;
     QString parola;
     QString cale_sursa;
@@ -33,6 +34,8 @@ private slots:
     void on_lineEdit_5_editingFinished();
 
     void on_pushButton_clicked();
+
+    void on_lineEdit_6_editingFinished();
 
 private:
     Ui::FTP *ui;

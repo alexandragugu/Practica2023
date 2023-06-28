@@ -119,39 +119,35 @@ void FTP::on_pushButton_clicked()
     QNetworkAccessManager manager;
     qDebug()<<"A intart in FTP";
     // Definiți adresa IP și portul serverului FTP
-    QString serverIP = "127.0.0.1";
-    int serverPort = 14148;
+    QString serverIP = this->adresaServer;
+    int serverPort = this->port_number;
 
-    // Definiți calea și numele fișierului de destinație pe serverul FTP
-    QString remoteFilePath = "D:/Practica2023/test_ftp.txt";
 
-    // Setați URL-ul utilizând adresa IP și portul
+    QString remoteFilePath = "D:/Practica2023/afisare.txt";
+
     QUrl url;
     url.setScheme("ftp");
     url.setHost(serverIP);
     url.setPort(serverPort);
-    url.setPath(remoteFilePath);
-
-    // Setăm numele utilizatorului și parola pentru autentificare FTP (dacă este necesar)
     url.setUserName(this->user);
     url.setPassword(this->parola);
+    url.setPath(remoteFilePath);
 
-    // Definiți calea și numele fișierului local pe care dorim să îl încărcăm
+
+   // QString localFilePath = "D:/Practica2023/afisare.txt";
+
     QString localFilePath = this->cale_sursa;
 
-    // Verificăm dacă fișierul local există și este deschis pentru citire
+
     QFile file(localFilePath);
     if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
         qDebug() << "Failed to open local file for reading";
     }
 
-    // Realizăm cererea PUT pentru a încărca fișierul
+
     QNetworkReply *reply = manager.put(QNetworkRequest(url), &file);
-    if (reply==nullptr)
-        qDebug()<<"Nu a primit reply";
-    else
-        qDebug()<<"A primit reply";
-    // Conectăm semnalul finished() pentru a verifica când transferul este finalizat
+
+
     QObject::connect(reply, &QNetworkReply::finished, [&]() {
         qDebug()<<"S-a conectat";
         if (reply->error() == QNetworkReply::NoError) {
@@ -160,7 +156,7 @@ void FTP::on_pushButton_clicked()
             qDebug() << "Transfer failed. Error:" << reply->errorString();
         }
 
-        // Închidem fișierul local și închidem aplicația după finalizarea transferului
+
         file.close();
         //qApp->quit();
     });
@@ -168,4 +164,10 @@ void FTP::on_pushButton_clicked()
     this->close();
 }
 
+
+
+void FTP::on_lineEdit_6_editingFinished()
+{
+    this->port_number=ui->lineEdit_6->text().toInt();
+}
 

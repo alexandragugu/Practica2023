@@ -20,29 +20,17 @@ DNSWindow::~DNSWindow()
 void DNSWindow::on_pushButton_clicked()
 {
     DNSOptiuni *optiuni=new DNSOptiuni();
+    optiuni->getPath(this->path);
     optiuni->getType("Query");
     optiuni->show();
 
 }
 
 
-void DNSWindow::on_pushButton_2_clicked()
-{
-    DNSOptiuni *optiuni=new DNSOptiuni();
-    optiuni->show();
-}
-
-
-void DNSWindow::on_pushButton_3_clicked()
-{
-    DNSOptiuni *optiuni=new DNSOptiuni();
-    optiuni->show();
-}
-
-
 void DNSWindow::on_pushButton_4_clicked()
 {
     DNSUpdate *optiuni= new DNSUpdate();
+    optiuni->getPath(this->path);
     optiuni->show();
 }
 

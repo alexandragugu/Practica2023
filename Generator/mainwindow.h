@@ -3,7 +3,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QString>
 
 
 QT_BEGIN_NAMESPACE
@@ -14,7 +14,8 @@ class MainWindow : public QMainWindow
 
 {
     Q_OBJECT
-
+protected:
+    QString path="D:/Practica2023/simulare";
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -32,6 +33,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QString getNumber();
 };
 
 #endif // MAINWINDOW_H

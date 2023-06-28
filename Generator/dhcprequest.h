@@ -14,8 +14,10 @@ class DHCPRequest : public QMainWindow
     QString ip;
     QString proxy_ip="";
     int proxy_port=0;
+    QString path;
 public:
     explicit DHCPRequest(QWidget *parent = nullptr);
+    void getPath(QString cale){this->path=cale;};
     ~DHCPRequest();
 
 private slots:

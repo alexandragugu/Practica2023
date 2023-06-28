@@ -16,6 +16,7 @@ class DNSUpdate : public QMainWindow,
 protected:
     QString adresaIP="127.0.0.1";
     QString nr_port;
+    QString proxy_ip;
 
 public:
     explicit DNSUpdate(QWidget *parent = nullptr);
@@ -27,6 +28,11 @@ private slots:
     void on_lineEdit_2_editingFinished();
 
     void on_pushButton_clicked();
+
+    void on_ip_proxy_editingFinished();
+
+
+    void on_lineEdit_4_editingFinished();
 
 private:
     Ui::DNSUpdate *ui;

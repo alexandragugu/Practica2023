@@ -15,8 +15,10 @@ protected:
     QString ip;
     QString id;
     QString secNr;
+    QString path;
 public:
     explicit ICMP(QWidget *parent = nullptr);
+    void getPath(QString cale){this->path=cale;};
     ~ICMP();
 
 private slots:

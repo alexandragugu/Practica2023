@@ -8,7 +8,8 @@
 #include <QFile>
 #include <QJsonArray>
 #include <QDebug>
-
+#include <QtNetwork/QNetworkProxy>
+#include <QUrl>
 
 HttpGet::HttpGet(QWidget *parent) :
     QMainWindow(parent),
@@ -35,6 +36,14 @@ void HttpGet::on_pushButton_clicked()
     QNetworkAccessManager* manager = new QNetworkAccessManager();
 
     QNetworkRequest request;
+    if (this->proxy_ip!="" && this->proxy_port!=0){
+        QNetworkProxy proxy;
+        proxy.setType(QNetworkProxy::HttpProxy);
+        proxy.setHostName(this->proxy_ip);
+        proxy.setPort(this->proxy_port);
+        manager->setProxy(proxy);
+
+    }
     request.setUrl(QUrl(url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     this->saveRequest(request,url);
@@ -46,7 +55,7 @@ void HttpGet::on_pushButton_clicked()
    // QString sourceIP;
    // QString decodedText;
     QObject::connect(reply, &QNetworkReply::finished, [=]() {
-        // Procesează răspunsul HTTP
+
         QByteArray responseData = reply->readAll();
 
         //Extragem adresa IP de unde am primit raspunsul
@@ -64,13 +73,13 @@ void HttpGet::on_pushButton_clicked()
         json["destinationIP"] = sourceIP;
         json["messageLength"] = decodedData.length() ;
 
-        // Converteste obiectul JSON in șir de caractere
-        QString path="D:/Practica2023/http_get.txt";
+
+      //  QString path="D:/Practica2023/http_get.txt";
         QJsonDocument jsonDocument(json);
         QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
 
-        // Salvează șirul JSON într-un fișier text
-        QFile file(path);
+
+        QFile file(this->path);
         if (file.open(QIODevice::Append | QIODevice::Text)) {
             QTextStream stream(&file);
             stream << jsonString;
@@ -89,50 +98,6 @@ void HttpGet::on_pushButton_clicked()
 
 }
 
-        /*
-// -------------------------------------------------------------------
-        // Manipulează datele primite aici
-
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(decodedData);
-        QJsonParseError jsonError;
-        QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
-        if (jsonError.error != QJsonParseError::NoError) {
-            // Parsarea JSON a eșuat
-            qDebug() << "Eroare la parsarea JSON:" << jsonError.errorString();
-            qDebug() << "La poziția:" << jsonError.offset;
-        } else {
-            // Parsarea JSON a reușit
-            qDebug() << "JSON parsat cu succes.";
-
-            // Continuă manipularea datelor JSON aici
-        }
-
-        // Verifică dacă parsarea JSON a fost reușită
-        if (jsonDocument.isNull()){
-            qDebug()<<"E GOL";
-        }else {
-        if (!jsonDocument.isNull()) {
-            // Converteste JSON-ul intr-un string formatat pentru a fi salvat in fisier
-
-            QString path="D:/Practica2023/httpget.txt";
-            // Deschide fisierul pentru scriere
-            QFile file(path);
-
-            if (file.open(QIODevice::Append)) {
-                QTextStream stream(&file);
-                stream << jsonString;
-                file.close();
-                qDebug() << "Pachetul a fost salvat cu succes în fisierul JSON.";
-            } else {
-                qDebug() << "Eroare la salvarea pachetului în fisierul JSON.";
-            }
-        } else {
-            qDebug() << "Eroare la parsarea pachetului JSON.";
-        }
-        }
-//--------------------------------------------------------------------------------------------
-*/
-
 
 void HttpGet::saveRequest(QNetworkRequest request, QString url_addr)
 {
@@ -147,38 +112,32 @@ void HttpGet::saveRequest(QNetworkRequest request, QString url_addr)
     }
     requestObject["headers"] = headersArray;
 
-    // Convertim obiectul JSON într-un document JSON
+
     QJsonDocument jsonDocument(requestObject);
 
-    // Salvăm documentul JSON într-un fișier text
+
     QString path="D:/Practica2023/httpget.txt";
-    QFile file(path);
+    QFile file(this->path);
     if (file.open(QIODevice::Append)) {
         file.write(jsonDocument.toJson());
         file.close();
-        qDebug() << "Cererea a fost salvată în fișierul request.json.";
+        qDebug() << "Cererea a fost salvata in fisier";
     } else {
-        qDebug() << "Eroare la salvarea cererii în fișierul request.json.";
+        qDebug() << "Eroare la salvarea cererii in fisier";
     }
 }
-/*
-void HttpGet::savepacket(QString url, QString data)
+
+
+
+
+void HttpGet::on_ip_proxy_editingFinished()
 {
-    QJsonObject packetObject;
-    packetObject["url"] = url;
-    packetObject["responseData"] =data;
-
-    // Creează documentul JSON
-    QJsonDocument jsonDoc(packetObject);
-    QString path="D:/Practica2023/httpget.txt";
-    // Deschide fișierul pentru scriere
-    QFile file(path);
-    if (file.open(QIODevice::WriteOnly)) {
-        // Scrie documentul JSON în fișier
-      file.write(jsonDoc.toJson());
-
-        // Închide fișierul
-        file.close();
-    }
+    this->proxy_ip=ui->ip_proxy->text();
 }
-*/
+
+
+void HttpGet::on_port_proxy_editingFinished()
+{
+    this->proxy_port=ui->port_proxy->text().toInt();
+}
+

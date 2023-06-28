@@ -45,27 +45,33 @@ void DNSUpdate::on_pushButton_clicked()
 
     QByteArray dnsUpdatePacket;
 
-    dnsUpdatePacket.append('\x00');  // Opcode și alte setări
+    dnsUpdatePacket.append('\x00');  // Opcode si alte setari
     dnsUpdatePacket.append('\x00');
-    dnsUpdatePacket.append('\x00');  // Numărul de întrebări
-    dnsUpdatePacket.append('\x01');  // Numărul de înregistrări în secțiunea de resurse adăugate
+    dnsUpdatePacket.append('\x00');  // Numarul de intrebari
+    dnsUpdatePacket.append('\x01');  // Numarul de inregistrari resurse adaugate
     dnsUpdatePacket.append('\xC0');  // Nume de domeniu: Pointer către numele de domeniu în întrebare
     dnsUpdatePacket.append('\x0C');
-    dnsUpdatePacket.append('\x00');  // Tipul de înregistrare: A (adresă IP)
+    dnsUpdatePacket.append('\x00');  // tip inregistrare: A =ip
     dnsUpdatePacket.append('\x01');
-    dnsUpdatePacket.append('\x00');  // Clasa de înregistrare: IN (Internet)
-    dnsUpdatePacket.append('\x01');  // Time-To-Live (TTL) pentru înregistrare (valoare de exemplu)
+    dnsUpdatePacket.append('\x00');  // Clasa de inregistrare IN (Internet)
+    dnsUpdatePacket.append('\x01');  //
     dnsUpdatePacket.append('\x00');
     dnsUpdatePacket.append('\x00');
     dnsUpdatePacket.append('\x00');
-    dnsUpdatePacket.append('\x04');  // Lungimea datelor de înregistrare: 4 octeți (adresă IP)
-    QByteArray ip=this->adresaIP.toUtf8().toHex();
-    dnsUpdatePacket.append(ip);  // Adresă IP: 127.0.0.1
+    dnsUpdatePacket.append('\x04');  // Lungimea datelor
+    QByteArray ip;
+    if (this->proxy_ip!=""){
+      ip =this->adresaIP.toUtf8().toHex();
+    }
+    else{
+      ip=this->adresaIP.toUtf8().toHex();
+    }
+    dnsUpdatePacket.append(ip);
     dnsUpdatePacket.append('\x00');
     dnsUpdatePacket.append('\x00');
     dnsUpdatePacket.append('\x01');
 
-    // Trimitere pachet DNS update către serverul DNS
+
     socket.writeDatagram(dnsUpdatePacket, dnsServerAddress, dnsPort);
 
     QJsonObject jsonData;
@@ -73,16 +79,15 @@ void DNSUpdate::on_pushButton_clicked()
     jsonData["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODate);
     jsonData["Source"] =this->HostAddress;
     jsonData["Destination"] =this->adresaIP;
-    jsonData["dns_update_packet"] = QString::fromLatin1(dnsUpdatePacket.toHex());  // Salvează pachetul DNS ca bază64
+    jsonData["dns_update_packet"] = QString::fromLatin1(dnsUpdatePacket.toHex());
 
-    // Convertirea structurii JSON în format text
     QJsonDocument jsonDoc(jsonData);
     QByteArray jsonBytes = jsonDoc.toJson();
 
 
     // Salvare in fisier
     QString path="D:/Practica2023/dns_packet.txt";
-    QFile file(path);
+    QFile file(this->path);
     if (file.open(QIODevice::Append)) {
         file.write(jsonBytes);
         file.close();
@@ -91,5 +96,18 @@ void DNSUpdate::on_pushButton_clicked()
         qWarning() << "Eroare la deschiderea fisierului pentru scriere.";
     }
     this->close();
+}
+
+
+void DNSUpdate::on_ip_proxy_editingFinished()
+{
+    this->proxy_ip=ui->ip_proxy->text();
+}
+
+
+
+void DNSUpdate::on_lineEdit_4_editingFinished()
+{
+    this->proxy_port=ui->port_proxy->text().toInt();
 }
 

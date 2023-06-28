@@ -25,32 +25,8 @@ void DHCP::on_Discover_clicked()
         qWarning() << "Failed to bind socket:" << socket.errorString();
 
     }
-/*
-    // Construim pachetul DHCP
-    QByteArray datagram;
-    QDataStream out(&datagram, QIODevice::WriteOnly);
-
-    // Header DHCP
-    out << quint8(0x01);  // Mesaj tip BOOTREQUEST
-    out << quint8(0x01);  // Lungimea adresei hardware
-    out << quint8(0x06);  // Lungimea adresei IP
-    out << quint8(0x00);  // Lungimea clientului hardware
-    out << quint32(0x00); // Opțiuni DHCP rezervate
-
-    // Adăugăm opțiunea DHCP Discover
-    out << quint8(0x35);  // Codul opțiunii DHCP Discover
-    out << quint8(0x01);  // Lungimea opțiunii
-    out << quint8(0x01);  // Valoarea opțiunii Discover
-
-    // Trimitem pachetul DHCP la adresa de broadcast
-    QNetworkDatagram datagramToSend(datagram, QHostAddress::Broadcast, 67);
-    if (!socket.writeDatagram(datagramToSend)) {
-        qWarning() << "Failed to send DHCP packet:" << socket.errorString();
-
-    }
-*/
-    QString proxyAddress = "192.168.1.100";
-    int proxyPort = 8080;
+    QString proxyAddress = this->ip_proxy;
+    int proxyPort = this->proxy_port;
 
     // Construim pachetul DHCP
     QByteArray datagram;
@@ -65,29 +41,28 @@ void DHCP::on_Discover_clicked()
 
     // Adăugăm opțiunea DHCP Discover
     out << quint8(0x35);  // Codul opțiunii DHCP Discover
-    out << quint8(0x01);  // Lungimea opțiunii
-    out << quint8(0x01);  // Valoarea opțiunii Discover
+    out << quint8(0x01);  // Lungimea opt
+    out << quint8(0x01);  // Valoare Discover
 
     // Trimitem pachetul DHCP la adresa de broadcast prin intermediul proxy-ului
     QHostAddress proxyHost(proxyAddress);
-    QNetworkDatagram datagramToSend(datagram, proxyHost, proxyPort);  // Utilizăm adresa IP și portul proxy-ului în loc de adresa de broadcast
+    QNetworkDatagram datagramToSend(datagram, proxyHost, proxyPort);  //
     if (!socket.writeDatagram(datagramToSend)) {
         qWarning() << "Failed to send DHCP packet:" << socket.errorString();
     }
 
-    // Salvăm pachetul DHCP într-un fișier
-    QString filePath = "/path/to/file.txt";
-    QFile file(filePath);
+
+    QFile file(this->path);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream stream(&file);
-        stream << datagram.toHex(' ');  // Salvăm pachetul sub forma de text hexazecimal
+        stream << datagram.toHex(' ');  // Salvam pachetul sub forma de text hexazecimal
         file.close();
     } else {
         qWarning() << "Failed to open file for writing:" << file.errorString();
     }
 
 
-    // Salvăm pachetul DHCP sub forma unei structuri JSON
+
     QJsonObject dhcpPacketJson;
     dhcpPacketJson["MessageType"] = 0x01;
     dhcpPacketJson["HardwareAddressLength"] = 0x01;
@@ -102,9 +77,9 @@ void DHCP::on_Discover_clicked()
     // Convertim obiectul JSON într-un document JSON
     QJsonDocument jsonDoc(dhcpPacketJson);
 
-    // Salvăm documentul JSON într-un fișier text
+
     QString path="D:/Practica2023/dhcp_packet.txt";
-    QFile outputFile(path);
+    QFile outputFile(this->path);
     if (outputFile.open(QIODevice::Append | QIODevice::Text)) {
         outputFile.write(jsonDoc.toJson());
         outputFile.close();
@@ -120,6 +95,7 @@ void DHCP::on_Discover_clicked()
 void DHCP::on_Request_clicked()
 {
     DHCPRequest *nou=new DHCPRequest();
+    nou->getPath(this->path);
     nou->show();
 }
 

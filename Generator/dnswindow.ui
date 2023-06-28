@@ -39,7 +39,7 @@
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>200</x>
        <y>110</y>
        <width>93</width>
        <height>29</height>
@@ -49,36 +49,10 @@
       <string>Query</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>110</y>
-       <width>93</width>
-       <height>29</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Response</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_3">
-     <property name="geometry">
-      <rect>
-       <x>370</x>
-       <y>110</y>
-       <width>93</width>
-       <height>29</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Notify</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pushButton_4">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>430</x>
        <y>110</y>
        <width>93</width>
        <height>29</height>

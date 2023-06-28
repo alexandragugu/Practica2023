@@ -48,16 +48,15 @@ void DHCPRequest::on_pushButton_clicked()
     out << quint32(0x00); // Opțiuni DHCP rezervate
 
     // Adăugăm opțiunea DHCP Request
-    out << quint8(0x35);  // Codul opțiunii DHCP Request
-    out << quint8(0x01);  // Lungimea opțiunii
-    out << quint8(0x03);  // Valoarea opțiunii Request
+    out << quint8(0x35);  // Codul DHCP Request
+    out << quint8(0x01);  // Lungime
+    out << quint8(0x03);  // Valoarea Request
 
     if(this->ip!="" && this->proxy_port!=0)
     {
-        out << quint8(0x36);  // Codul opțiunii DHCP Proxy
-        out << quint8(0x04);  // Lungimea opțiunii
-        out << quint32(QHostAddress("192.168.1.1").toIPv4Address());  // Adresa IP a proxy-ului
-
+        out << quint8(0x36);  // Codul DHCP Proxy
+        out << quint8(0x04);  // Lungimea
+        out << quint32(QHostAddress(this->proxy_ip).toIPv4Address());
     }
     else{
 
@@ -83,16 +82,15 @@ void DHCPRequest::on_pushButton_clicked()
     dhcpRequestOption["Value"] = 0x03;
     dhcpPacketJson["DHCPRequestOption"] = dhcpRequestOption;
 
-    // Convertim obiectul JSON într-un document JSON
+
     QJsonDocument jsonDocument(dhcpPacketJson);
 
-    // Salvăm documentul JSON într-un fișier text
     QString path="D:/Practica2023/dhcp_packet.txt";
     QFile file(path);
     if (file.open(QIODevice::Append | QIODevice::Text)) {
         file.write(jsonDocument.toJson());
         file.close();
-        qDebug() << "Pachetul DHCP a fost salvat în fișierul dhcp_packet.json";
+        qDebug() << "Pachetul DHCP a fost salvat";
     } else {
         qWarning() << "Nu s-a putut deschide";
     }

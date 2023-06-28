@@ -11,6 +11,9 @@ class DNSQuery : public DNS
 {
 protected:
     QString domainIP;
+    QString proxy_ip;
+    int proxy_port;
+    int port;
 public:
     DNSQuery(QString domeniu);
     void trimite();

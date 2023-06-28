@@ -18,8 +18,10 @@ protected:
     QByteArray data;
     QString from;
     QString to;
+    QString path;
 public:
     explicit HTTPPost(QWidget *parent = nullptr);
+    void getPath(QString cale){this->path=cale;};
     ~HTTPPost();
 
 private slots:

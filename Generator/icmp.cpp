@@ -47,19 +47,25 @@ void ICMP::on_pushButton_clicked()
     QByteArray data;
 
     quint16 icmpID = this->id.toInt();
-        //this->id.toInt();
-        //1234; // ID-ul ICMP
+
     quint16 icmpSequence = this->secNr.toInt();
-        //1; // Numărul de secvență ICMP
 
     // Construirea datelor pachetului ICMP
     data.append(char(8)); // Tipul mesajului ICMP (8 pentru cerere Echo)
     data.append(char(0)); // Codul mesajului ICMP
     data.append(QByteArray::fromRawData(reinterpret_cast<const char*>(&icmpID), sizeof(icmpID))); // ID-ul ICMP
-    data.append(QByteArray::fromRawData(reinterpret_cast<const char*>(&icmpSequence), sizeof(icmpSequence))); // Numărul de secvență ICMP
-    data.append("Hello, ICMP!"); // Date suplimentare
-
+    data.append(QByteArray::fromRawData(reinterpret_cast<const char*>(&icmpSequence), sizeof(icmpSequence))); // Nr secv ICMP
     QNetworkDatagram datagram(data, QHostAddress(destinationIP), 0);
+
+    QJsonObject jsonData1;
+    jsonData1["icmp_packet"] = QString(data.toHex());  // Convertire pachet hexa
+    jsonData1["Destination"] = this->ip;
+    jsonData1["id"]=this->id;
+    jsonData1["Numar de secventa"]=this->secNr;
+
+    QJsonDocument jsonDoc(jsonData1);
+    QByteArray jsonBytes1 = jsonDoc.toJson();
+
 
     // Trimiterea pachetului ICMP
    // socket.writeDatagram(datagram);
@@ -72,30 +78,28 @@ void ICMP::on_pushButton_clicked()
     if (socket.waitForReadyRead()) {
         replyDatagram = socket.receiveDatagram();
         QByteArray replyData = replyDatagram.data();
-        // Procesați și afișați răspunsul ICMP aici
+
         qDebug() << "Răspuns ICMP primit:" << replyData;
-                // Salvarea pachetului creat într-o structură JSON
+
         QJsonObject jsonData;
-        jsonData["icmp_packet"] = QString(replyData.toHex());  // Convertirea pachetului în format hexadecimal
-        jsonData["Destination"] = this->ip;
-        jsonData["id"]=this->id;
-        jsonData["Numar de secventa"]=this->secNr;
-        // Convertirea structurii JSON în format text
+         jsonData["Type"] = "Response";
+        jsonData["icmp_packet"] = QString(replyData.toHex());
+
         QJsonDocument jsonDoc(jsonData);
         QByteArray jsonBytes = jsonDoc.toJson();
 
-        QString path="D:/Practica2023/icmp_packet.txt";
-        QString fileName = "icmp_packet.json";
-        QFile file(fileName);
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+
+            QFile file(this->path);
+        if (file.open(QIODevice::Append | QIODevice::Text)) {
+            file.write(jsonBytes1);
             file.write(jsonBytes);
             file.close();
-            qDebug() << "Pachetul ICMP a fost salvat în fișierul" << fileName;
+            qDebug() << "Pachetul ICMP a fost salvat" ;
         } else {
-            qWarning() << "Eroare la salvarea pachetului ICMP în fișierul" << fileName;
+            qWarning() << "Eroare la salvarea pachetului ICMP" ;
         }
     } else {
-        qDebug() << "Nu s-a primit răspuns ICMP.";
+        qDebug() << "Nu s-a primit raspuns ICMP.";
     }
 
     this->close();

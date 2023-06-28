@@ -22,7 +22,30 @@ void DNSQuery::trimite()
     qDebug()<<"Adresa ip host:"<<this->HostAddress;
     QString domainName =this->domeniu;
 
+    if(this->proxy_ip != "" && this->proxy_port!=0){
+        QByteArray dnsPacket = "Hello DNS"; // Pachetul DNS
+        QHostAddress proxyAddress(this->proxy_ip); // Adresa IP a proxy-ului
 
+        QTcpSocket socket;
+        socket.connectToHost(proxyAddress, this->proxy_port);
+
+        if (socket.waitForConnected()) {
+            socket.write(dnsPacket);
+            qDebug() << "Packet sent to proxy";
+            this->savePacket(dnsPacket);
+            while (socket.waitForReadyRead()) {
+                QByteArray response = socket.readAll();
+                qDebug() << "Received response from proxy:" << response;
+                this->savePacketResponse(response);
+            }
+
+            socket.close();
+        } else {
+            qDebug() << "Failed to connect to proxy";
+        }
+    }
+    else{
+        qDebug()<<domainName;
     QHostInfo::lookupHost(domainName, [this](const QHostInfo &hostInfo) {
         qDebug()<<"A trimis";
         if (hostInfo.error() == QHostInfo::NoError) {
@@ -31,7 +54,7 @@ void DNSQuery::trimite()
             qDebug()<<address;
             QNetworkDatagram datagram;
             datagram.setData("Hello DNS");
-            datagram.setDestination(address, 53); // DNS port
+            datagram.setDestination(address,this->port); // DNS port
             qDebug() << "Packet Data:" << QString::fromLatin1(datagram.data());
             savePacket(datagram.data());
 
@@ -55,6 +78,7 @@ void DNSQuery::trimite()
             QCoreApplication::quit();
         }
     });
+    }
 
 }
 
@@ -71,7 +95,7 @@ void DNSQuery::savePacket (const QByteArray &packet)
     QJsonDocument jsonDoc(jsonObject);
     QByteArray jsonData = jsonDoc.toJson();
     QString path="D:/Practica2023/dns_query.txt";
-    QFile file(path);
+    QFile file(this->path);
     if (file.open(QIODevice::Append)){
         file.write(jsonData);
         file.close();
@@ -95,8 +119,8 @@ void DNSQuery::savePacketResponse(const QByteArray &packet)
 
     QJsonDocument jsonDoc(jsonObject);
     QByteArray jsonData = jsonDoc.toJson();
-    QString path="D:/Practica2023/dns_query.txt";
-    QFile file(path);
+   // QString path="D:/Practica2023/dns_query.txt";
+    QFile file(this->path);
     if (file.open(QIODevice::Append)){
         file.write(jsonData);
         file.close();

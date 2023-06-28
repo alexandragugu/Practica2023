@@ -28,7 +28,7 @@ void DNS::getIPAddress()
     QHostInfo hostInfo = QHostInfo::fromName(localHostName);
     QList<QHostAddress> ipAddresses = hostInfo.addresses();
 
-    // Parcurgeți lista de adrese IP și afișați adresa IPv4 nevida
+
     for (const QHostAddress& ip : ipAddresses) {
         if (ip.protocol() == QAbstractSocket::IPv4Protocol && !ip.isLoopback()) {
             this->HostAddress=ip.toString();
