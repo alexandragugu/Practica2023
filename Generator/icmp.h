@@ -12,14 +12,14 @@ class ICMP : public QMainWindow
 {
     Q_OBJECT
 protected:
-    QString ip;
-    QString id;
-    QString secNr;
+    QString ip="";
+    QString id="0";
+    QString secNr="0";
     QString path;
 public:
     explicit ICMP(QWidget *parent = nullptr);
     void getPath(QString cale){this->path=cale;};
-    ~ICMP();
+ //   ~ICMP();
 
 private slots:
     void on_lineEdit_editingFinished();
@@ -29,7 +29,7 @@ private slots:
     void on_lineEdit_3_editingFinished();
 
     void on_pushButton_clicked();
-
+    QString generateIP();
 private:
     Ui::ICMP *ui;
 };

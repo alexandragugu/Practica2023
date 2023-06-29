@@ -1,5 +1,6 @@
 #include "icmp.h"
 #include "ui_icmp.h"
+#include <QRandomGenerator>
 #include <QCoreApplication>
 #include <QUdpSocket>
 #include <QNetworkDatagram>
@@ -14,12 +15,12 @@ ICMP::ICMP(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+/*
 ICMP::~ICMP()
 {
     delete ui;
 }
-
+*/
 void ICMP::on_lineEdit_editingFinished()
 {
     this->ip=ui->lineEdit->text();
@@ -42,12 +43,22 @@ void ICMP::on_pushButton_clicked()
 {
     QUdpSocket socket;
     socket.open(QIODevice::ReadWrite);
-    QString destinationIP = this->ip;
-
+    QString destinationIP;
+    if(this->ip!="")
+    destinationIP = this->ip;
+    else
+    {
+    this->ip=this->generateIP();
+    }
     QByteArray data;
-
+    if(this->id=="0"){
+    this->id=QString::number(QRandomGenerator::global()->bounded(256));
+    }
     quint16 icmpID = this->id.toInt();
-
+    if(this->secNr=="0")
+    {
+    this->secNr=QString::number(QRandomGenerator::global()->bounded(256));
+    }
     quint16 icmpSequence = this->secNr.toInt();
 
     // Construirea datelor pachetului ICMP
@@ -68,7 +79,7 @@ void ICMP::on_pushButton_clicked()
 
 
     // Trimiterea pachetului ICMP
-   // socket.writeDatagram(datagram);
+    socket.writeDatagram(datagram);
     if (socket.writeDatagram(datagram) == -1) {
         qDebug() << "Eroare la trimiterea pachetului ICMP.";
     } else {
@@ -79,7 +90,7 @@ void ICMP::on_pushButton_clicked()
         replyDatagram = socket.receiveDatagram();
         QByteArray replyData = replyDatagram.data();
 
-        qDebug() << "Răspuns ICMP primit:" << replyData;
+        qDebug() << "Raspuns ICMP primit:" << replyData;
 
         QJsonObject jsonData;
          jsonData["Type"] = "Response";
@@ -90,7 +101,7 @@ void ICMP::on_pushButton_clicked()
 
 
             QFile file(this->path);
-        if (file.open(QIODevice::Append | QIODevice::Text)) {
+        if (file.open(QIODevice::Append )) {
             file.write(jsonBytes1);
             file.write(jsonBytes);
             file.close();
@@ -103,5 +114,16 @@ void ICMP::on_pushButton_clicked()
     }
 
     this->close();
+}
+
+QString ICMP::generateIP()
+{
+    QString ipAddress;
+    for (int i = 0; i < 4; ++i) {
+        if (i > 0)
+            ipAddress.append(".");
+        ipAddress.append(QString::number(QRandomGenerator::global()->bounded(256)));
+    }
+    return ipAddress;
 }
 

@@ -12,6 +12,7 @@ class HttpGet;
 class HttpGet : public QMainWindow
 {
     Q_OBJECT
+
 protected:
    QString url;
     QString path;
@@ -20,7 +21,7 @@ protected:
 public:
     explicit HttpGet(QWidget *parent = nullptr);
     void getPath(QString cale){this->path=cale;};
-    ~HttpGet();
+   // ~HttpGet();
 
 private slots:
     void on_lineEdit_editingFinished();

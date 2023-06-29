@@ -15,16 +15,13 @@ DHCPRequest::DHCPRequest(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+/*
 DHCPRequest::~DHCPRequest()
 {
     delete ui;
 }
+*/
 
-void DHCPRequest::on_lineEdit_editingFinished()
-{
-    this->ip=ui->lineEdit->text();
-}
 
 
 void DHCPRequest::on_pushButton_clicked()
@@ -41,13 +38,13 @@ void DHCPRequest::on_pushButton_clicked()
     QDataStream out(&datagram, QIODevice::WriteOnly);
 
     // Header DHCP
-    out << quint8(0x01);  // Mesaj tip BOOTREQUEST
+    out << quint8(0x01);  // Mesaj tip REQUEST
     out << quint8(0x01);  // Lungimea adresei hardware
     out << quint8(0x06);  // Lungimea adresei IP
     out << quint8(0x00);  // Lungimea clientului hardware
     out << quint32(0x00); // Opțiuni DHCP rezervate
 
-    // Adăugăm opțiunea DHCP Request
+    // Adaugam optiunea DHCP Request
     out << quint8(0x35);  // Codul DHCP Request
     out << quint8(0x01);  // Lungime
     out << quint8(0x03);  // Valoarea Request
@@ -68,7 +65,7 @@ void DHCPRequest::on_pushButton_clicked()
     }
     }
 
-    // Salvăm pachetul DHCP sub forma unei structuri JSON
+
     QJsonObject dhcpPacketJson;
     dhcpPacketJson["MessageType"] = 0x01;
     dhcpPacketJson["HardwareAddressLength"] = 0x01;
@@ -85,8 +82,8 @@ void DHCPRequest::on_pushButton_clicked()
 
     QJsonDocument jsonDocument(dhcpPacketJson);
 
-    QString path="D:/Practica2023/dhcp_packet.txt";
-    QFile file(path);
+   // QString path="D:/Practica2023/dhcp_packet.txt";
+    QFile file(this->path);
     if (file.open(QIODevice::Append | QIODevice::Text)) {
         file.write(jsonDocument.toJson());
         file.close();
@@ -98,6 +95,7 @@ void DHCPRequest::on_pushButton_clicked()
     this->close();
 }
 
+/*
 
 void DHCPRequest::on_ip_proxy_editingFinished()
 {
@@ -109,4 +107,5 @@ void DHCPRequest::on_port_proxy_editingFinished()
 {
     this->proxy_port=ui->port_proxy->text().toInt();
 }
+*/
 

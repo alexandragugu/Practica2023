@@ -18,7 +18,7 @@ protected:
 public:
     explicit HTTP(QWidget *parent = nullptr);
     void getPath(QString cale){this->path=cale;};
-    ~HTTP();
+  //  ~HTTP();
 
 private slots:
 
@@ -29,10 +29,6 @@ private slots:
     void on_pushButton_2_clicked();
 
 
-
-    void on_ip_proxy_editingFinished();
-
-    void on_port_proxy_editingFinished();
 
 private:
     Ui::HTTP *ui;

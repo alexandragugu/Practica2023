@@ -14,13 +14,13 @@ class DNSUpdate : public QMainWindow,
 {
     Q_OBJECT
 protected:
-    QString adresaIP="127.0.0.1";
+    QString adresaIP="";
     QString nr_port;
     QString proxy_ip;
 
 public:
     explicit DNSUpdate(QWidget *parent = nullptr);
-    ~DNSUpdate();
+  //  ~DNSUpdate();
 
 private slots:
     void on_lineEdit_editingFinished();

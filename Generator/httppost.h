@@ -14,7 +14,7 @@ class HTTPPost : public QMainWindow
     Q_OBJECT
 protected:
     QString url;
-    QString sourcefile;
+    QString sourcefile="D:/Practica2023/post.txt";
     QByteArray data;
     QString from;
     QString to;
@@ -22,7 +22,7 @@ protected:
 public:
     explicit HTTPPost(QWidget *parent = nullptr);
     void getPath(QString cale){this->path=cale;};
-    ~HTTPPost();
+  //  ~HTTPPost();
 
 private slots:
     void on_lineEdit_editingFinished();

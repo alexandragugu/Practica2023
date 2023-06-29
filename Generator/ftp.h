@@ -12,15 +12,17 @@ class FTP : public QMainWindow
 {
     Q_OBJECT
 protected:
-    QString adresaServer;
+    QString adresaServer="";
     int port_number;
     QString user;
     QString parola;
     QString cale_sursa;
     QString cale_destinatie;
+    QString path;
 public:
     explicit FTP(QWidget *parent = nullptr);
-    ~FTP();
+    void getPath(QString cale){this->path=cale;};
+  //  ~FTP();
 
 private slots:
     void on_lineEdit_editingFinished();
@@ -36,6 +38,8 @@ private slots:
     void on_pushButton_clicked();
 
     void on_lineEdit_6_editingFinished();
+
+    QString generateRamdomIp();
 
 private:
     Ui::FTP *ui;

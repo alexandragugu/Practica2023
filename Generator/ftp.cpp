@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QRandomGenerator>
 
 FTP::FTP(QWidget *parent) :
     QMainWindow(parent),
@@ -15,11 +16,12 @@ FTP::FTP(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+/*
 FTP::~FTP()
 {
     delete ui;
 }
+*/
 
 void FTP::on_lineEdit_editingFinished()
 {
@@ -51,74 +53,13 @@ void FTP::on_lineEdit_5_editingFinished()
 }
 
 
-/*void FTP::on_pushButton_clicked()
-{
-    //UPLOAD
-    QNetworkAccessManager manager;
-
-    // Definiți adresa și calea către fișierul de destinație pe serverul FTP
-
-    QUrl url("ftp://cale_destinatie/fisier_ftp.txt");
-
-    // Setăm numele utilizatorului și parola pentru autentificare FTP (dacă este necesar)
-    url.setUserName(this->user);
-    url.setPassword(this->parola);
-
-    // Definim fișierul local pe care dorim să-l încărcăm
-    QString localFilePath =this->cale_sursa;
-
-    QFile file(localFilePath);
-
-    // Verificăm dacă fișierul local există și este deschis pentru citire
-    if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Failed to open local file for reading";
-    }
-
-    // Realizăm cererea PUT pentru a încărca fișierul
-    QNetworkReply *reply = manager.put(QNetworkRequest(url), &file);
-
-    // Conectăm semnalul finished() pentru a verifica când transferul este finalizat
-    QObject::connect(reply, &QNetworkReply::finished, [&]() {
-        if (reply->error() == QNetworkReply::NoError) {
-            qDebug() << "Transfer completed";
-            QByteArray responseData = reply->readAll();
-
-            // Creăm structura JSON
-            QJsonObject jsonObject;
-            jsonObject["url"] = url.toString();
-            jsonObject["file_content"] = QString(responseData);
-
-            // Serializăm structura JSON
-            QJsonDocument jsonDocument(jsonObject);
-            QByteArray jsonBytes = jsonDocument.toJson();
-
-            // Scriem structura JSON în fișierul text
-            QFile jsonFile("D:/Practica2023/out.txt");
-            if (jsonFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                jsonFile.write(jsonBytes);
-                jsonFile.close();
-                qDebug() << "JSON data saved to output.txt";
-            } else {
-                qDebug() << "Failed to open output.txt for writing";
-            }
-        } else {
-            qDebug() << "Transfer failed. Error:" << reply->errorString();
-        }
-
-        // Închidem fișierul local și închidem aplicația după finalizarea transferului
-        file.close();
-        qApp->quit();
-    });
-
-    this->close();
-}
-*/
-
 void FTP::on_pushButton_clicked()
 {
     QNetworkAccessManager manager;
     qDebug()<<"A intart in FTP";
-    // Definiți adresa IP și portul serverului FTP
+    if(this->adresaServer==""){
+        this->adresaServer=this->generateRamdomIp();
+    }
     QString serverIP = this->adresaServer;
     int serverPort = this->port_number;
 
@@ -144,7 +85,6 @@ void FTP::on_pushButton_clicked()
         qDebug() << "Failed to open local file for reading";
     }
 
-
     QNetworkReply *reply = manager.put(QNetworkRequest(url), &file);
 
 
@@ -156,18 +96,27 @@ void FTP::on_pushButton_clicked()
             qDebug() << "Transfer failed. Error:" << reply->errorString();
         }
 
-
         file.close();
-        //qApp->quit();
+
     });
 
     this->close();
 }
 
 
-
 void FTP::on_lineEdit_6_editingFinished()
 {
     this->port_number=ui->lineEdit_6->text().toInt();
+}
+
+QString FTP::generateRamdomIp()
+{
+    QString ipAddress;
+    for (int i = 0; i < 4; ++i) {
+        if (i > 0)
+            ipAddress.append(".");
+        ipAddress.append(QString::number(QRandomGenerator::global()->bounded(256)));
+    }
+    return ipAddress;
 }
 

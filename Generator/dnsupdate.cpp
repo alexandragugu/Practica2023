@@ -14,11 +14,12 @@ DNSUpdate::DNSUpdate(QWidget *parent) :
 
     ui->setupUi(this);
 }
-
+/*
 DNSUpdate::~DNSUpdate()
 {
     delete ui;
 }
+*/
 
 void DNSUpdate::on_lineEdit_editingFinished()
 {
@@ -36,6 +37,9 @@ void DNSUpdate::on_lineEdit_2_editingFinished()
 
 void DNSUpdate::on_pushButton_clicked()
 {
+    if(this->adresaIP==""){
+        this->adresaIP=this->generateRandomIP();
+    }
     QHostAddress dnsServerAddress(this->adresaIP);
     quint16 dnsPort = this->nr_port.toInt();
 
@@ -86,7 +90,7 @@ void DNSUpdate::on_pushButton_clicked()
 
 
     // Salvare in fisier
-    QString path="D:/Practica2023/dns_packet.txt";
+   // QString path="D:/Practica2023/dns_packet.txt";
     QFile file(this->path);
     if (file.open(QIODevice::Append)) {
         file.write(jsonBytes);

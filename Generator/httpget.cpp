@@ -1,3 +1,17 @@
+/*#include "httpget.h"
+#include "ui_httpget.h"
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QNetworkReply>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QFile>
+#include <QJsonArray>
+#include <QDebug>
+#include <QtNetwork/QNetworkProxy>
+#include <QUrl>
+*/
+
 #include "httpget.h"
 #include "ui_httpget.h"
 #include <QtNetwork/QNetworkAccessManager>
@@ -9,7 +23,7 @@
 #include <QJsonArray>
 #include <QDebug>
 #include <QtNetwork/QNetworkProxy>
-#include <QUrl>
+#include <QtNetwork/QNetworkProxy>
 
 HttpGet::HttpGet(QWidget *parent) :
     QMainWindow(parent),
@@ -17,12 +31,12 @@ HttpGet::HttpGet(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+/*
 HttpGet::~HttpGet()
 {
     delete ui;
 }
-
+*/
 void HttpGet::on_lineEdit_editingFinished()
 {
     QString text=ui->lineEdit->text();
@@ -33,9 +47,9 @@ void HttpGet::on_lineEdit_editingFinished()
 void HttpGet::on_pushButton_clicked()
 {
 
-    QNetworkAccessManager* manager = new QNetworkAccessManager();
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
 
-    QNetworkRequest request;
+
     if (this->proxy_ip!="" && this->proxy_port!=0){
         QNetworkProxy proxy;
         proxy.setType(QNetworkProxy::HttpProxy);
@@ -44,26 +58,26 @@ void HttpGet::on_pushButton_clicked()
         manager->setProxy(proxy);
 
     }
-    request.setUrl(QUrl(url));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    this->saveRequest(request,url);
 
-    QNetworkReply* reply = manager->get(request);
+    QNetworkRequest request;
+    request.setUrl(QUrl(this->url));
+    this->saveRequest(request,this->url);
 
-    QHostAddress lAddress = QHostAddress(QHostAddress::LocalHost);
-    QString hostIP = lAddress.toString();
-   // QString sourceIP;
-   // QString decodedText;
-    QObject::connect(reply, &QNetworkReply::finished, [=]() {
+    QNetworkReply* reply = manager->get(QNetworkRequest(QUrl(this->url)));
 
+    // qDebug()<<"Aici";
+    QObject::connect(reply, &QNetworkReply::finished, [&]() {
+        qDebug()<<"A intrat in connect";
         QByteArray responseData = reply->readAll();
-
+        //qDebug() << responseData;
         //Extragem adresa IP de unde am primit raspunsul
+        QHostAddress lAddress = QHostAddress(QHostAddress::LocalHost);
+        QString hostIP = lAddress.toString();
         QByteArray sourceIPBytes = reply->rawHeader("X-Reply-Source-IP");
          QString sourceIP= QString::fromUtf8(sourceIPBytes);
 
-       // qDebug() << responseData.toUtf8();
-        QByteArray decodedData = QByteArray::fromPercentEncoding(responseData);
+
+         QByteArray decodedData=responseData; // = QByteArray::fromPercentEncoding(responseData);
         QString text = QString::fromUtf8(decodedData);
         QString decodedText = text;
         qDebug()<<decodedText;
@@ -71,10 +85,10 @@ void HttpGet::on_pushButton_clicked()
         json["packetType"] = "Response";
         json["sourceIP"] = hostIP;
         json["destinationIP"] = sourceIP;
-        json["messageLength"] = decodedData.length() ;
+        json["messageLength"] = decodedData.length();
 
 
-      //  QString path="D:/Practica2023/http_get.txt";
+
         QJsonDocument jsonDocument(json);
         QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
 
@@ -84,15 +98,13 @@ void HttpGet::on_pushButton_clicked()
             QTextStream stream(&file);
             stream << jsonString;
             file.close();
-            qDebug() << "Fisierul http_get.txt a fost salvat cu succes.";
+            qDebug() << "Fisierul a fost salvat cu succes.";
         } else {
-            qDebug() << "Eroare la salvarea fisierului http_get.txt.";
+            qDebug() << "Eroare la salvarea fisierului ";
         }
-      });
-    // Elibereaza resursele
-    reply->deleteLater();
-    manager->deleteLater();
+    });
 
+    // Elibereaza resursele
 
     this->close();
 
@@ -116,7 +128,7 @@ void HttpGet::saveRequest(QNetworkRequest request, QString url_addr)
     QJsonDocument jsonDocument(requestObject);
 
 
-    QString path="D:/Practica2023/httpget.txt";
+
     QFile file(this->path);
     if (file.open(QIODevice::Append)) {
         file.write(jsonDocument.toJson());
@@ -126,8 +138,6 @@ void HttpGet::saveRequest(QNetworkRequest request, QString url_addr)
         qDebug() << "Eroare la salvarea cererii in fisier";
     }
 }
-
-
 
 
 void HttpGet::on_ip_proxy_editingFinished()

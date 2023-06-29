@@ -1,6 +1,7 @@
 
 #include "dnsquery.h"
 #include <QCoreApplication>
+#include <QUdpSocket>
 #include <QNetworkDatagram>
 #include <QNetworkInterface>
 #include <QNetworkReply>
@@ -50,6 +51,9 @@ void DNSQuery::trimite()
         qDebug()<<"A trimis";
         if (hostInfo.error() == QHostInfo::NoError) {
             QHostAddress address = hostInfo.addresses().first();
+            if(this->domainIP==""){
+                this->domainIP=this->generateRandomIP();
+            }
             this->domainIP =address.toString();
             qDebug()<<address;
             QNetworkDatagram datagram;

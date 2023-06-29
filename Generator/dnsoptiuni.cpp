@@ -11,11 +11,12 @@ DNSOptiuni::DNSOptiuni(QWidget *parent) :
     ui->setupUi(this);
 }
 
+/*
 DNSOptiuni::~DNSOptiuni()
 {
     delete ui;
 }
-
+*/
 
 void DNSOptiuni::on_OK_clicked()
 {

@@ -13,11 +13,12 @@ HTTPPost::HTTPPost(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+/*
 HTTPPost::~HTTPPost()
 {
     delete ui;
 }
+*/
 
 void HTTPPost::on_lineEdit_editingFinished()
 {
@@ -43,6 +44,29 @@ void HTTPPost::on_pushButton_clicked()
     this->readData();
     QByteArray postData=this->data;
    // postData.append("param1=value1");
+    QJsonObject requestObject;
+    requestObject["url"] = request.url().toString();
+    requestObject["method"] = request.attribute(QNetworkRequest::CustomVerbAttribute).toString();
+    QList<QByteArray> headerList = request.rawHeaderList();
+    QList<QByteArray> headers = request.rawHeaderList();
+    QJsonArray headersArray;
+    for (const QByteArray& header : headers) {
+        headersArray.append(QString(header));
+    }
+    requestObject["headers"] = headersArray;
+
+
+    QJsonDocument jsonDocument(requestObject);
+
+    QFile file(this->path);
+    if (file.open(QIODevice::Append)) {
+        file.write(jsonDocument.toJson());
+        file.close();
+        qDebug() << "Cererea a fost salvata in fisier";
+    } else {
+        qDebug() << "Eroare la salvarea cererii in fisier";
+    }
+
 
     QNetworkReply *reply = manager.post(request, postData);
 
@@ -57,9 +81,6 @@ void HTTPPost::on_pushButton_clicked()
             qDebug() << "Eroare:" << reply->errorString();
         }
 
-
-        reply->deleteLater();
-
     });
 
     this->close();
@@ -67,8 +88,8 @@ void HTTPPost::on_pushButton_clicked()
 
 void HTTPPost::readData()
 {
-    QString path="D:/Practica2023/"+this->sourcefile;
-    QFile file(path);
+    QString path=this->sourcefile;
+    QFile file(this->path);
 
     if (file.open(QIODevice::ReadOnly)) {
         this->data = file.readAll();

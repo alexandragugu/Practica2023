@@ -16,7 +16,7 @@ class DNSWindow : public QMainWindow
 public:
     explicit DNSWindow(QWidget *parent = nullptr);
     void getPath(QString cale){ this->path=cale; };
-    ~DNSWindow();
+   // ~DNSWindow();
 protected:
     QString path;
 private slots:

@@ -16,9 +16,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 protected:
     QString path="D:/Practica2023/simulare";
+    int ok=0;
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+   // ~MainWindow();
 
 private slots:
     void on_ICMP_clicked();
@@ -30,6 +31,8 @@ private slots:
     void on_pushButton_3_clicked();
 
     void on_pushButton_4_clicked();
+
+    void on_pushButton_5_clicked();
 
 private:
     Ui::MainWindow *ui;

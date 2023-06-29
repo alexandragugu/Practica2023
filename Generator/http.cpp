@@ -10,11 +10,12 @@ HTTP::HTTP(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+/*
 HTTP::~HTTP()
 {
     delete ui;
 }
+*/
 
 void HTTP::on_pushButton_3_clicked()
 {
@@ -28,7 +29,7 @@ void HTTP::on_pushButton_2_clicked()
 {
     HttpGet *nou=new HttpGet();
     nou->getPath(this->path);
-     nou->show();
+    nou->show();
 }
 void HTTP::on_pushButton_clicked()
 {
@@ -36,14 +37,4 @@ void HTTP::on_pushButton_clicked()
 }
 
 
-void HTTP::on_ip_proxy_editingFinished()
-{
-     this->ip_proxy=ui->ip_proxy->text();
-}
-
-
-void HTTP::on_port_proxy_editingFinished()
-{
-     this->port_proxy=ui->port_proxy->text();
-}
 

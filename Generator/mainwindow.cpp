@@ -15,15 +15,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 }
 
+/*
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
+*/
 
 void MainWindow::on_ICMP_clicked()
 {
     qDebug("DA");
+    if(this->ok==0){
+        this->getNumber();
+        this->ok++;
+    }
     DNSWindow *nou=new DNSWindow();
     nou->getPath(this->path);
     nou->show();
@@ -34,6 +39,10 @@ void MainWindow::on_ICMP_clicked()
 void MainWindow::on_pushButton_clicked()
 {
     qDebug("HTTP");
+    if(this->ok==0){
+        this->getNumber();
+        this->ok++;
+    }
     HTTP *nou=new HTTP();
     nou->getPath(this->path);
     nou->show();
@@ -43,13 +52,23 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    if(this->ok==0){
+        this->getNumber();
+        this->ok++;
+    }
+
     FTP *nou=new FTP();
+    nou->getPath(this->path);
     nou->show();
 }
 
 
 void MainWindow::on_pushButton_3_clicked()
 {
+    if(this->ok==0){
+        this->getNumber();
+        this->ok++;
+    }
     ICMP *nou=new ICMP();
     nou->getPath(this->path);
     nou->show();
@@ -58,6 +77,10 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
+    if(this->ok==0){
+        this->getNumber();
+        this->ok++;
+    }
     DHCP *nou=new DHCP();
     nou->getPath(this->path);
     nou->show();
@@ -76,13 +99,16 @@ QString MainWindow::getNumber()
         file.close();
     }
     this->path=this->path+firstLine+".txt";
+    qDebug()<<this->path;
     //Scrie iar in fisier
     int number=firstLine.toInt();
     number++;
+    qDebug()<<number;
     QFile file2(filePath);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (file2.open(QIODevice::WriteOnly)) {
         QTextStream stream(&file2);
         stream << number;
+        qDebug()<<"A scris in fisier";
         file2.close();
 
     } else {
@@ -90,5 +116,11 @@ QString MainWindow::getNumber()
     }
     QString trimite;
     return trimite.setNum(number);
+}
+
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    this->close();
 }
 

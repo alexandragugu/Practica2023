@@ -24,7 +24,7 @@ protected:
 
 public:
    void trimite();
-    void getIPAddress();
+   void getIPAddress();
    void getPath(QString cale){ this->path=cale;};
 };
 

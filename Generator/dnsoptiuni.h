@@ -26,7 +26,7 @@ public:
     //DNSOptiuni(QString type);
     void getType(QString tip){this->packet_type=tip;};
     void getPath(QString cale){ this->path=cale;};
-    ~DNSOptiuni();
+   // ~DNSOptiuni();
 
 
 private slots:

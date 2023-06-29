@@ -11,11 +11,12 @@ DNSWindow::DNSWindow(QWidget *parent) :
     ui->setupUi(this);
 
 }
-
+/*
 DNSWindow::~DNSWindow()
 {
     delete ui;
 }
+*/
 
 void DNSWindow::on_pushButton_clicked()
 {
